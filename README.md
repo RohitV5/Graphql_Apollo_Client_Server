@@ -20,3 +20,4 @@ or
 
 
 
+after updating prisma models run => prisma db push
