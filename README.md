@@ -28,7 +28,7 @@ graphql post is always a post request.
 
 just copy the query from graphql apollo gui and pass in request body
 
-_
+`
 fetch("http://localhost:3000,{
     method:"POST",
     header:{
@@ -53,4 +53,4 @@ fetch("http://localhost:3000,{
 .then(data=>{
     console.log(data)
 })
-_
+`
