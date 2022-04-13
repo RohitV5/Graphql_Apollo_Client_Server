@@ -21,3 +21,36 @@ or
 
 
 after updating prisma models run => prisma db push
+
+
+we can use graphquery api without any library by using fetch api call.
+graphql post is always a post request.
+
+just copy the query from graphql apollo gui and pass in request body
+
+_
+fetch("http://localhost:3000,{
+    method:"POST",
+    header:{
+        "Content-type":"application/json"
+        "Authorization":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0OTUwNjE3NH0.2u5aPTjJrPHDTd13xlptZvZRxUhuJUH7O4ZSERBeX2k"
+    },
+    body:JSON.stringify({
+        query:`
+            query MessagesByUser($receiverId: Int!) {
+                messagesByUser(receiverId: $receiverId) {
+                    text
+                    receiverId
+                    senderId
+                }
+            }
+        `,
+        variables:{            
+            "receiverId": 2
+        }
+    })
+}).then(res=>res.json())
+.then(data=>{
+    console.log(data)
+})
+_
