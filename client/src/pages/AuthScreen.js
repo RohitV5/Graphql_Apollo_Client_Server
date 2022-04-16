@@ -1,5 +1,14 @@
 import React, { useState, useRef } from "react";
-import { Box, Stack, Typography, Button, TextField, Card, CircularProgress, Alert } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  Button,
+  TextField,
+  Card,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 import { useMutation } from "@apollo/client";
 import { SIGNUP_USER } from "../graphql/mutations";
 
@@ -8,15 +17,23 @@ function AuthScreen() {
   const [formData, setFormData] = useState({});
   const authForm = useRef(null);
 
-  const [signupUser, { data:signupData, loading:l1, error:e1 }] = useMutation(SIGNUP_USER);
+  const [signupUser, { data: signupData, loading: l1, error: e1 }] =
+    useMutation(SIGNUP_USER);
 
-  if(l1){
-    return(
-      <Box>
-        <CircularProgress />
-        <Typography variant="h6">Authenticating...</Typography>
+  if (l1) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <Box textAlign="center">
+          <CircularProgress />
+          <Typography variant="h6">Authenticating...</Typography>
+        </Box>
       </Box>
-    )
+    );
   }
 
   const handleChange = (e) => {
@@ -29,13 +46,13 @@ function AuthScreen() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    if(showLogin){
+    if (showLogin) {
       //signin
-    }else{
+    } else {
       //signup
       signupUser({
-        variables:{userNew:formData}
-      })
+        variables: { userNew: formData },
+      });
     }
   };
   return (
@@ -50,10 +67,14 @@ function AuthScreen() {
     >
       <Card sx={{ padding: "10px" }} variant="outlined">
         <Stack direction="column" spacing={2} sx={{ width: "400px" }}>
-         {signupData && <Alert severity="success">{signupData?.signupUser?.firstName} Signed up!</Alert>}
-         {e1 && <Alert severity="error">{e1?.message} Signed up!</Alert>}
+          {signupData && (
+            <Alert severity="success">
+              {signupData?.signupUser?.firstName} Signed up!
+            </Alert>
+          )}
+          {e1 && <Alert severity="error">{e1?.message} Signed up!</Alert>}
 
-         <Typography variant="h5">
+          <Typography variant="h5">
             Please {showLogin ? "Signin" : "Signup"}
           </Typography>
           {!showLogin && (
