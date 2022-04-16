@@ -54,3 +54,6 @@ fetch("http://localhost:3000,{
     console.log(data)
 })
 `
+
+Install Apollo Cmd 5.6.10 is not compatible with react 18 due to peer dependecies
+npm i --legacy-peer-deps @apollo/client

@@ -1,10 +1,24 @@
 import React, { useState, useRef } from "react";
-import { Box, Stack, Typography, Button, TextField, Card } from "@mui/material";
+import { Box, Stack, Typography, Button, TextField, Card, CircularProgress, Alert } from "@mui/material";
+import { useMutation } from "@apollo/client";
+import { SIGNUP_USER } from "../graphql/mutations";
 
 function AuthScreen() {
   const [showLogin, setShowLogin] = useState(true);
   const [formData, setFormData] = useState({});
   const authForm = useRef(null);
+
+  const [signupUser, { data:signupData, loading:l1, error:e1 }] = useMutation(SIGNUP_USER);
+
+  if(l1){
+    return(
+      <Box>
+        <CircularProgress />
+        <Typography variant="h6">Authenticating...</Typography>
+      </Box>
+    )
+  }
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -15,6 +29,14 @@ function AuthScreen() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
+    if(showLogin){
+      //signin
+    }else{
+      //signup
+      signupUser({
+        variables:{userNew:formData}
+      })
+    }
   };
   return (
     <Box
@@ -28,7 +50,10 @@ function AuthScreen() {
     >
       <Card sx={{ padding: "10px" }} variant="outlined">
         <Stack direction="column" spacing={2} sx={{ width: "400px" }}>
-          <Typography variant="h5">
+         {signupData && <Alert severity="success">{signupData?.signupUser?.firstName} Signed up!</Alert>}
+         {e1 && <Alert severity="error">{e1?.message} Signed up!</Alert>}
+
+         <Typography variant="h5">
             Please {showLogin ? "Signin" : "Signup"}
           </Typography>
           {!showLogin && (
@@ -42,7 +67,7 @@ function AuthScreen() {
               <TextField
                 label="Last Name"
                 variant="standard"
-                name="lastname"
+                name="lastName"
                 onChange={handleChange}
               />
             </>
@@ -65,7 +90,7 @@ function AuthScreen() {
             variant="subtitle1"
             onClick={() => {
               setShowLogin(!showLogin);
-              setFormData({})
+              setFormData({});
               authForm.current.reset();
             }}
           >
