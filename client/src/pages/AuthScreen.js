@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Stack,
@@ -20,7 +20,12 @@ function AuthScreen() {
   const [signupUser, { data: signupData, loading: l1, error: e1 }] =
     useMutation(SIGNUP_USER);
 
-  if (l1) {
+  useEffect(() => {
+    console.log(l1);
+    console.log(signupData);
+  }, [l1, signupData]);
+
+  if (l1 && !signupData) {
     return (
       <Box
         display="flex"
@@ -52,6 +57,7 @@ function AuthScreen() {
       //signup
       signupUser({
         variables: { userNew: formData },
+        notifyOnNetworkStatusChange: true
       });
     }
   };
