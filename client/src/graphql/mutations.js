@@ -11,7 +11,7 @@ export const SIGNUP_USER = gql`
   }
 `;
 
-export const SIGNIN_USER = gql`
+export const LOGIN_USER = gql`
   mutation signinUser($userSignin: UserSigninInput!) {
     signinUser(userSignin: $userSignin) {
       token
