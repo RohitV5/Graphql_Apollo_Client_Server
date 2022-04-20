@@ -31,7 +31,7 @@ const SideBar = ({ setLoggedIn }) => {
       </Stack>
 
       <Divider />
-      {users.map((user, i) => (
+      {data?.users?.map((user, i) => (
         <UserCard key={`user${i}`} user={user} />
       ))}
     </Box>
