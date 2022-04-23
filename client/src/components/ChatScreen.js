@@ -1,4 +1,3 @@
-
 import {
   Box,
   AppBar,
@@ -7,18 +6,33 @@ import {
   Avatar,
   TextField,
 } from "@mui/material";
-import React from "react";
-import { useQuery } from "@apollo/client";
+import React, { useState } from "react";
+import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { GET_MSGS } from "../graphql/queries";
 import MessageCard from "./MessageCard";
+import SendIcon from "@mui/icons-material/Send";
+import { Stack } from "@mui/material";
+import { SEND_MSG } from "../graphql/mutations";
 
 const ChatScreen = () => {
   const { id, name } = useParams();
-  debugger
+
+  const [text, setText] = useState();
   const { data, loading, error } = useQuery(GET_MSGS, {
     variables: { receiverId: +id },
+    onCompleted(data) {
+      setMessages(data.messagesByUser);
+    },
   });
+
+  const [sendMessage] = useMutation(SEND_MSG, {
+    onCompleted(data) {
+      setMessages((prevMessages) => [...prevMessages, data?.createMessage]);
+    },
+  });
+
+  const [messages, setMessages] = useState([]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -41,7 +55,7 @@ const ChatScreen = () => {
         {loading ? (
           <Typography variant="h6">Loading chats...</Typography>
         ) : (
-          data?.messagesByUser.map((message) => (
+          messages?.map((message) => (
             <MessageCard
               key={message.createdAt}
               text={message?.text}
@@ -54,13 +68,21 @@ const ChatScreen = () => {
 
         <MessageCard text={"hello"} date={"12/Aug"} direction="end" /> */}
       </Box>
-      <TextField
-        placeholder="Enter a message"
-        variant="standard"
-        fullWidth
-        multiline
-        rows={2}
-      ></TextField>
+      <Stack direction="row">
+        <TextField
+          placeholder="Enter a message"
+          variant="standard"
+          fullWidth
+          multiline
+          rows={2}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        ></TextField>
+        <SendIcon
+          fontSize="large"
+          onClick={() => sendMessage({ variables: { receiverId: +id, text } })}
+        />
+      </Stack>
     </Box>
   );
 };
