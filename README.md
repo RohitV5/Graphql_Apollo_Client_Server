@@ -57,3 +57,60 @@ fetch("http://localhost:3000,{
 
 Install Apollo Cmd 5.6.10 is not compatible with react 18 due to peer dependecies
 npm i --legacy-peer-deps @apollo/client
+
+
+
+
+
+
+
+
+How to run server
+==========
+nodemon server
+
+
+How to run client
+===========
+inside client  node start
+
+
+Run XAMPP  Apache and MySQL
+==========================
+open http://localhost/phpmyadmin/ for database access
+
+
+Inside graphql apollo running at 4000 
+
+under mutation signIn and get the token
+after signing in get the token and attach in subsequent request in the header Authorization.
+
+
+Some common creds 
+zango1@gmail.com/rohit
+zango2@gmail.com/rohit
+
+
+
+Note:
+
+GraphQL Subscriptions do not work with apollo-server default package
+It uses apollo-sever-express which uses web socket to create 2 way functionality.
+And For that we need to add a package.
+https://github.com/enisdenjo/graphql-ws
+
+For Apollo server implementation checkout branch apollo-server
+For Apollo server express subscription package checkout branch apollo-server-express ws
+
+Cmd for subscription packages 
+npm install apollo-server-express graphql-ws @graphql-tools/schema express
+
+Also
+
+Server.js has Apollo server implementation
+Server2.js has Apollo server express implementation
+
+
+
+
+
