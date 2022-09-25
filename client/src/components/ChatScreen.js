@@ -7,13 +7,14 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, useSubscription } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { GET_MSGS } from "../graphql/queries";
 import MessageCard from "./MessageCard";
 import SendIcon from "@mui/icons-material/Send";
 import { Stack } from "@mui/material";
 import { SEND_MSG } from "../graphql/mutations";
+import { MSG_SUB } from "../graphql/subscriptions";
 
 const ChatScreen = () => {
   const { id, name } = useParams();
@@ -26,6 +27,7 @@ const ChatScreen = () => {
     },
   });
 
+
   const [sendMessage] = useMutation(SEND_MSG, {
     onCompleted(data) {
       setMessages((prevMessages) => [...prevMessages, data?.createMessage]);
@@ -33,6 +35,11 @@ const ChatScreen = () => {
   });
 
   const [messages, setMessages] = useState([]);
+
+  
+  const { data: subData } = useSubscription(MSG_SUB);
+
+  if (subData) console.log(subData);
 
   return (
     <Box sx={{ flexGrow: 1 }}>

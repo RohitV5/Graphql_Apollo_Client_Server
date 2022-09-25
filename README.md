@@ -8,6 +8,7 @@ install xampp for mysql and apache
 
  npm i -g prisma
 
+//To create database tables
 [
  npx prisma migrate dev --name init_migration
 

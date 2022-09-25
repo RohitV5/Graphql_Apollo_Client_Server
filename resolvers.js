@@ -11,6 +11,8 @@ const prisma = new pc.PrismaClient();
 
 const MESSAGE_ADDED = "MESSAGE_ADDED";
 
+const pubsub = new PubSub()
+
 const resolvers = {
   Query: {
     users: async (_, _args, { userId }) => {
@@ -79,14 +81,14 @@ const resolvers = {
           senderId: userId,
         },
       });
-      PubSub.publish(MESSAGE_ADDED, { messageAdded: message });
+      pubsub.publish(MESSAGE_ADDED, { messageAdded: message });
 
       return message;
     },
   },
   Subscription: {
     messageAdded: {
-      subscribe: () => PubSub.asyncIterator(MESSAGE_ADDED),
+      subscribe: () => pubsub.asyncIterator(MESSAGE_ADDED),
     },
   },
 };
