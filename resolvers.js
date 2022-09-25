@@ -6,8 +6,10 @@ import {
 } from "apollo-server-express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import { PubSub } from "graphql-subscriptions";
 const prisma = new pc.PrismaClient();
+
+const MESSAGE_ADDED = "MESSAGE_ADDED";
 
 const resolvers = {
   Query: {
@@ -32,13 +34,13 @@ const resolvers = {
               senderId: receiverId,
               receiverId: userId,
             },
-          ],          
+          ],
         },
-        orderBy:{
-            createdAt:"asc"
-        }
+        orderBy: {
+          createdAt: "asc",
+        },
       });
-      return messages
+      return messages;
     },
   },
   Mutation: {
@@ -77,7 +79,14 @@ const resolvers = {
           senderId: userId,
         },
       });
+      PubSub.publish(MESSAGE_ADDED, { messageAdded: message });
+
       return message;
+    },
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: () => PubSub.asyncIterator(MESSAGE_ADDED),
     },
   },
 };
