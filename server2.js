@@ -8,6 +8,7 @@ import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+const port = process.env.PORT || 4000;
 
 // create express and HTTP server
 const app = express();
@@ -58,6 +59,6 @@ apolloServer.applyMiddleware({ app, path:"/graphql" });  //serves over http prot
 
 
 
-httpServer.listen(4000, ()=>{
+httpServer.listen(port, ()=>{
   console.log("Apollo Server is up")
 });

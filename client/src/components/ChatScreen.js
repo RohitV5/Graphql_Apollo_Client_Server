@@ -6,19 +6,23 @@ import {
   Avatar,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import React, { useRef, useState } from "react";
+import { useMutation, useQuery, useSubscription } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { GET_MSGS } from "../graphql/queries";
 import MessageCard from "./MessageCard";
 import SendIcon from "@mui/icons-material/Send";
 import { Stack } from "@mui/material";
 import { SEND_MSG } from "../graphql/mutations";
+import { MSG_SUB } from "../graphql/subscriptions";
 
 const ChatScreen = () => {
   const { id, name } = useParams();
+  const formRef = useRef();
 
-  const [text, setText] = useState();
+  const text = useRef();
+  const [messages, setMessages] = useState([]);
+
   const { data, loading, error } = useQuery(GET_MSGS, {
     variables: { receiverId: +id },
     onCompleted(data) {
@@ -27,12 +31,20 @@ const ChatScreen = () => {
   });
 
   const [sendMessage] = useMutation(SEND_MSG, {
-    onCompleted(data) {
-      setMessages((prevMessages) => [...prevMessages, data?.createMessage]);
+    // onCompleted(data) {
+    //   setMessages((prevMessages) => [...prevMessages, data?.createMessage]);
+    // },
+  });
+
+  const { data: subData } = useSubscription(MSG_SUB, {
+    onSubscriptionData({ subscriptionData: { data } }) {
+      setMessages((prevMessages) => [...prevMessages, data?.messageAdded]);
+      text.current = "";
+      formRef.current.reset();
     },
   });
 
-  const [messages, setMessages] = useState([]);
+  if (subData) console.log(subData);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -69,18 +81,23 @@ const ChatScreen = () => {
         <MessageCard text={"hello"} date={"12/Aug"} direction="end" /> */}
       </Box>
       <Stack direction="row">
-        <TextField
-          placeholder="Enter a message"
-          variant="standard"
-          fullWidth
-          multiline
-          rows={2}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        ></TextField>
+        <form ref={formRef}>
+          <TextField
+            placeholder="Enter a message"
+            variant="standard"
+            fullWidth
+            multiline
+            rows={2}
+            onChange={(e) => {
+              text.current = e.target.value;
+            }}
+          ></TextField>
+        </form>
         <SendIcon
           fontSize="large"
-          onClick={() => sendMessage({ variables: { receiverId: +id, text } })}
+          onClick={() =>
+            sendMessage({ variables: { receiverId: +id, text: text.current } })
+          }
         />
       </Stack>
     </Box>

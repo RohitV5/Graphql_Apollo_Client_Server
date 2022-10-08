@@ -1,6 +1,6 @@
 install nodemon globallly
-run => nodemon server
-open playground at localhost 4000
+run => nodemon server2   
+open playground at [localhost 4000](http://localhost:4000/graphql)
 
 apollo playground is similar to postman
 
@@ -8,6 +8,7 @@ install xampp for mysql and apache
 
  npm i -g prisma
 
+//To create database tables
 [
  npx prisma migrate dev --name init_migration
 
